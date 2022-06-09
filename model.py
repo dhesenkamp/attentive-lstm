@@ -7,7 +7,7 @@ from attention import SelfAttention
 class AttentiveLSTM(Model):
 
 
-    def __init__(self):
+    def __init__(self, hidden_units=128):
         super(AttentiveLSTM, self).__init__()
 
         self.attention_layer = SelfAttention()
