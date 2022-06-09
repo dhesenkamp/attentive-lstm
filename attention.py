@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tf.keras import Model
+from tensorflow.keras import Model
 
 class SelfAttention(Model):
 
@@ -10,4 +10,3 @@ class SelfAttention(Model):
 
     def call(self, input):
         pass
-    
