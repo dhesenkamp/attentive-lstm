@@ -12,7 +12,7 @@ class AttentiveLSTM(Model):
 
         self.attention_layer = SelfAttention()
         self.all_layers = [
-            Bidirectional(LSTM(units=hidden_units))
+            Bidirectional(LSTM(units=hidden_units)),
             # possibly use this instead
             #tfa.rnn.LayerNormLSTMCell(units=hidden_units)
 
@@ -20,7 +20,7 @@ class AttentiveLSTM(Model):
             Dropout(),
             
             #self-attention
-            self.attention_layer()
+            self.attention_layer(),
 
             BatchNorm(),
             Dropout(),
