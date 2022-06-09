@@ -7,6 +7,6 @@ The self-attention mechanism is based on Lin et al. (2017): [_A Structured Self-
 Layer normalization is based on Ba et al. (2016): [_Layer Normalization_](https://arxiv.org/abs/1607.06450v1)
 
 ### Network architecture
-| ![alt text](/img/architecture.png){align=center} |
+| ![alt text](/img/architecture.png) |
 |:--:|
 | A-LSTM network architecture - figure taken from Coskun et al. (2018) |
