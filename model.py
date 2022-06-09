@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import Model
 from tf.keras.layers import Dense, LSTM, Bidirectional, BatchNorm, Dropout
+from tensorflow_addons.rnn import LayerNormLSTMCell
 from attention import SelfAttention
 
 
@@ -14,7 +15,7 @@ class AttentiveLSTM(Model):
         self.all_layers = [
             Bidirectional(LSTM(units=hidden_units)),
             # possibly use this instead
-            #tfa.rnn.LayerNormLSTMCell(units=hidden_units)
+            #LayerNormLSTMCell(units=hidden_units)
 
             BatchNorm(),
             Dropout(),
