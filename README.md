@@ -20,8 +20,8 @@ Layer normalization is based on Ba et al. (2016): [_Layer Normalization_](https:
 
 
 ## References
-<div class="csl-entry">Ba, J. L., Kiros, J. R., &#38; Hinton, G. E. (2016). <i>Layer Normalization</i>. https://doi.org/10.48550/arxiv.1607.06450</div>
+Ba, J. L., Kiros, J. R., & Hinton, G. E. (2016). _Layer Normalization_. https://doi.org/10.48550/arxiv.1607.06450
 
-<div class="csl-entry">Coskun, H., Tan, D. J., Conjeti, S., Navab, N., &#38; Tombari, F. (2018). Human Motion Analysis with Deep Metric Learning. <i>Lecture Notes in Computer Science (Including Subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)</i>, <i>11218 LNCS</i>, 693–710. https://doi.org/10.48550/arxiv.1807.11176</div>
+Coskun, H., Tan, D. J., Conjeti, S., Navab, N., & Tombari, F. (2018). Human Motion Analysis with Deep Metric Learning._Lecture Notes in Computer Science (Including Subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)_,_11218 LNCS_, 693–710. https://doi.org/10.48550/arxiv.1807.11176
 
-<div class="csl-entry">Lin, Z., Feng, M., dos Santos, C. N., Yu, M., Xiang, B., Zhou, B., &#38; Bengio, Y. (2017). A Structured Self-attentive Sentence Embedding. <i>5th International Conference on Learning Representations, ICLR 2017 - Conference Track Proceedings</i>. https://doi.org/10.48550/arxiv.1703.03130</div>
+Lin, Z., Feng, M., dos Santos, C. N., Yu, M., Xiang, B., Zhou, B., & Bengio, Y. (2017). A Structured Self-attentive Sentence Embedding._5th International Conference on Learning Representations, ICLR 2017 - Conference Track Proceedings_. https://doi.org/10.48550/arxiv.1703.03130
