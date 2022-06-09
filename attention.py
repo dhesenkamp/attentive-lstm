@@ -12,12 +12,9 @@ class SelfAttention(Model):
 
         # 2 weight matrices á 200x10 and 10x1 (numbers from Coskun et al.)
         # init weight matrices with uniform dist with zero mean and 0.001 sd
-        self.d_a = 10 # arbitrary hyper param to set weight matrix size
+        self.d_a = 10 # treat as hyperparam for weight matrix size
         self.W_s1
         self.W_s2
-
-        self.tanh = tf.nn.tanh()
-        self.softmax = tf.nn.softmax()
 
 
     def call(self, input):
@@ -39,10 +36,15 @@ class SelfAttention(Model):
         
         # r
         state_sequence_T = tf.transpose(input)
-        r = self.tanh(tf.matmul(self.W_s1, state_sequence_T))
+        r = tf.nn.tanh(tf.matmul(self.W_s1, state_sequence_T))
         r = tf.matmul(r, self.W_s2)
 
-        # a_i
-        # E
+        # a
+        a = tf.math.exp(r)
+        a = tf.nn.softmax(a)
+        a = tf.math.negative(tf.math.log(a))
+
+        # E = A x S
+        embedding = tf.matmul(a, input)
         
-        return 
+        return embedding
