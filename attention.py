@@ -1,5 +1,41 @@
 import tensorflow as tf
 from tensorflow.keras import Model
+from tensorflow.keras.layers import Dense
+
+
+class SimpleAttention(Model):
+    """
+    Simple attention mechanism, based on https://towardsdatascience.com/create-your-own-custom-attention-layer-understand-all-flavours-2201b5e8be9e
+    """
+
+    def __init__(self):
+        """Constructor"""
+
+        super(SimpleAttention).__init__()
+
+        self.dense = Dense(units=1, activation='tanh')
+    
+    
+    def call(self, input):
+        """
+        Feed input through dense layer + softmax to obtain attention-adjusted weights.
+        Input comes directly from LSTM and is of shape (?, seq len, hidden units), output is 
+        of shape (?, seq len, 1).
+
+        Args:
+            input (tensor): output from previous LSTM layer, i.e. embedding of the input sequence
+        Returns:
+            a (tensor): attention-adjusted weights
+            output_sum (float): sum over inputs, weighted by attention
+        """
+
+        e = self.dense(input)
+        a = tf.nn.softmax(e)
+        output = a * input
+        output_sum = tf.math.sum(output, axis=1)
+
+        return a, output_sum
+
 
 class SelfAttention(Model):
     """
