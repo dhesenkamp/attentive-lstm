@@ -1,9 +1,10 @@
 import tensorflow as tf
 from tensorflow.keras import Model
+from tensorflow.keras.layers import Layer
 from tensorflow.keras.layers import Dense
 
 
-class SimpleAttention(Model):
+class SimpleAttention(Layer):
     """
     Simple attention mechanism, based on https://towardsdatascience.com/create-your-own-custom-attention-layer-understand-all-flavours-2201b5e8be9e
     """
@@ -11,46 +12,47 @@ class SimpleAttention(Model):
     def __init__(self):
         """Constructor"""
 
-        super(SimpleAttention).__init__()
-
+        super(SimpleAttention, self).__init__()
         self.dense = Dense(units=1, activation='tanh')
     
     
     def call(self, input):
         """
         Feed input through dense layer + softmax to obtain attention-adjusted weights.
-        Input comes directly from LSTM and is of shape (?, seq len, hidden units), output is 
-        of shape (?, seq len, 1).
+        Input comes directly from LSTM and is of shape (batch size, seq len, hidden units), output is 
+        of shape (batch size, seq len, 1).
 
         Args:
             input (tensor): output from previous LSTM layer, i.e. embedding of the input sequence
         Returns:
             a (tensor): attention-adjusted weights
-            output_sum (float): sum over inputs, weighted by attention
+            output (float): sum over inputs, weighted by attention
         """
 
         e = self.dense(input)
         a = tf.nn.softmax(e)
-        output = a * input
-        output_sum = tf.math.sum(output, axis=1)
+        attn_adj_input = a * input
+        output = tf.math.reduce_sum(attn_adj_input, axis=1)
 
-        return a, output_sum
+        return a, output
 
 
-class SelfAttention(Model):
+class SelfAttention(Layer):
     """
     Self-attention mechanism as per Lin et al. (2017), adapted for Coskun et al. (2018)
     https://arxiv.org/abs/1703.03130
     """
 
     def __init__(self):
+        """Constructor"""
+        
         super(SelfAttention, self).__init__()
 
         # 2 weight matrices á 200x10 and 10x1 (numbers from Coskun et al.)
         # init weight matrices with uniform dist with zero mean and 0.001 sd
         self.d_a = 10 # treat as hyperparam for weight matrix size
-        self.W_s1
-        self.W_s2
+        self.W_s1 = self.add_weight(shape=[200, self.d_a], trainable=True)
+        self.W_s2 = self.add_weight(shape=[self.d_a, 1], trainable=True)
 
 
     def call(self, input):
@@ -68,6 +70,11 @@ class SelfAttention(Model):
 
         Final embedding E:
             8. Multiply scores with sequence A x S
+        
+        Args:
+            input: embedding from the LSTM
+        Returns:
+            embedding: final, attention-adjusted embedding 
         """
         
         # r
