@@ -30,9 +30,9 @@ class AttentiveLSTM(Model):
         self.batchnorm1 = BatchNormalization()
         self.dropout1 = Dropout(rate=self.dropout_rate)
 
-        # attention layer(s)
+        # attention layer
         self.simpleAttention = SimpleAttention()
-        self.attention_layer = SelfAttention()
+        self.selfAttention = SelfAttention(r=5, lstm_units=hidden_units)
 
         self.batchnorm2 = BatchNormalization()
         self.dropout2 = Dropout(rate=self.dropout_rate)
@@ -54,7 +54,7 @@ class AttentiveLSTM(Model):
         Feed input through network.
         
         Args:
-            input (tensor): input to the model. Expects 3D tensor of form (batch size, timesteps, feature (embedding size?))
+            input (tensor): input to the model. Expects 3D tensor of form (batch, timesteps, feature)
             training (Bool): whether to use training or inference mode. Default: True (inference), set to False for training
         Returns:
             x: output of the model
@@ -64,7 +64,7 @@ class AttentiveLSTM(Model):
         x = self.batchnorm1(x, training=training)
         x = self.dropout1(x, training=training)
 
-        x = self.simpleAttention(x)
+        x = self.selfAttention(x)
 
         x = self.batchnorm2(x, training=training)
         x = self.dropout2(x, training=training)
