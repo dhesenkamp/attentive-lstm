@@ -57,7 +57,7 @@ class SelfAttention(Layer):
         # 2 weight matrices á 200x10 and 10x1 (numbers from Coskun et al.)
         # init weight matrices with uniform dist with zero mean and 0.001 sd
         self.d_a = 10 # treat as hyperparam for weight matrix size
-        self.W_s1 = self.add_weight(shape=[self.d_a, lstm_units], trainable=True)
+        self.W_s1 = self.add_weight(shape=[self.d_a, lstm_units*2], trainable=True)
         self.W_s2 = self.add_weight(shape=[r, self.d_a], trainable=True)
 
 
