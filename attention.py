@@ -51,8 +51,8 @@ class SelfAttention(Layer):
         # 2 weight matrices á 200x10 and 10x1 (numbers from Coskun et al.)
         # init weight matrices with uniform dist with zero mean and 0.001 sd
         self.d_a = 10 # treat as hyperparam for weight matrix size
-        self.W_s1 = self.add_weight(shape=[200, self.d_a], trainable=True)
-        self.W_s2 = self.add_weight(shape=[self.d_a, 1], trainable=True)
+        self.W_s1 = self.add_weight(shape=[self.d_a, 256], trainable=True)
+        self.W_s2 = self.add_weight(shape=[1, self.d_a], trainable=True)
 
 
     def call(self, input):
@@ -78,9 +78,8 @@ class SelfAttention(Layer):
         """
         
         # r
-        state_sequence_T = tf.transpose(input)
-        r = tf.nn.tanh(tf.matmul(self.W_s1, state_sequence_T))
-        r = tf.matmul(r, self.W_s2)
+        r = tf.nn.tanh(self.W_s1 @ tf.transpose(input))
+        r = self.W_s2 @ r
 
         # a
         a = tf.math.exp(r)
