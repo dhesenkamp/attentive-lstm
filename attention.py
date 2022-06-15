@@ -43,16 +43,22 @@ class SelfAttention(Layer):
     https://arxiv.org/abs/1703.03130
     """
 
-    def __init__(self):
-        """Constructor"""
+    def __init__(self, r, lstm_units):
+        """
+        Constructor. Initialize weight matrices for attention.
+        
+        Args:
+            r (int): number of time steps to pay attention to
+            lstm_units (int): number of hidden units of the preceeding LSTM. Required to get weight matrix in the correct shape
+        """
         
         super(SelfAttention, self).__init__()
 
         # 2 weight matrices á 200x10 and 10x1 (numbers from Coskun et al.)
         # init weight matrices with uniform dist with zero mean and 0.001 sd
         self.d_a = 10 # treat as hyperparam for weight matrix size
-        self.W_s1 = self.add_weight(shape=[self.d_a, 256], trainable=True)
-        self.W_s2 = self.add_weight(shape=[1, self.d_a], trainable=True)
+        self.W_s1 = self.add_weight(shape=[self.d_a, lstm_units], trainable=True)
+        self.W_s2 = self.add_weight(shape=[r, self.d_a], trainable=True)
 
 
     def call(self, input):
@@ -63,11 +69,9 @@ class SelfAttention(Layer):
             3. Feed through tanh
             4. Multiply by weight matrix W_s2
             5. Normalize by feeding through softmax
-        
         Compute a_i:
             6. Normalize (e.g. softmax)
             7. Negative log
-
         Final embedding E:
             8. Multiply scores with sequence A x S
         
