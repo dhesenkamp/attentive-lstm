@@ -16,7 +16,7 @@ Layer normalization is based on Ba et al. (2016): [_Layer Normalization_](https:
 ## TO DO
 - [ ] Penalization term using Frobenius norm
 - [ ] MMD-NCA loss
-- [ ] L2 norm
+- [x] L2 norm
 
 
 ## References
