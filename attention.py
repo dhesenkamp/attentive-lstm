@@ -82,7 +82,7 @@ class SelfAttention(Layer):
         """
         
         # r
-        r = tf.nn.tanh(self.W_s1 @ tf.transpose(input))
+        r = tf.nn.tanh(self.W_s1 @ tf.transpose(input, perm=[0, 2, 1]))
         r = self.W_s2 @ r
 
         # a
