@@ -18,6 +18,11 @@ Layer normalization is based on Ba et al. (2016): [_Layer Normalization_](https:
 - [ ] MMD-NCA loss
 - [x] L2 norm
 
+## Resources
+https://towardsdatascience.com/create-your-own-custom-attention-layer-understand-all-flavours-2201b5e8be9e  
+https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/  
+https://omoindrot.github.io/triplet-loss  
+
 
 ## References
 Ba, J. L., Kiros, J. R., & Hinton, G. E. (2016). _Layer Normalization_. https://doi.org/10.48550/arxiv.1607.06450
