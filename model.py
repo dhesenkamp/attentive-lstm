@@ -7,7 +7,11 @@ from attention import SimpleAttention, SelfAttention
 
 
 class AttentiveLSTM(Model):
-    """Self-attentive LSTM based on Coskun et al. (2018)"""
+    """
+    Self-attentive LSTM based on Coskun et al. (2018)
+    
+    Currently with triplet semihard loss as MMD-NCA is not implemented yet.
+    """
 
     def __init__(self, hidden_units=128):
         """
@@ -55,7 +59,7 @@ class AttentiveLSTM(Model):
         
         Args:
             input (tensor): input to the model. Expects 3D tensor of form (batch, timesteps, feature)
-            training (Bool): whether to use training or inference mode. Default: True (inference), set to False for training
+            training (Bool): whether to use training or inference mode. Default: False (inference), set to True for training
         Returns:
             x: output of the model
         """
