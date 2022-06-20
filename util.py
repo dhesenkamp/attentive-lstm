@@ -96,3 +96,22 @@ def create_batch(df, num_classes=5, samples=25):
     batch.append(_batch)
         
     return batch
+
+
+def kernel_function(x, x_prime, sigma=[1,2,4,8,16]):
+    """
+    Gaussian kernel function
+    
+    Args:
+        x, x_prime: two IID samples from a distribution
+        sigma (list): list with kernel parameters to compute from
+    Returns:
+        k_sum (float): sum over all kernels
+    """
+    k = []
+    for s in sigma:
+        k.append(tf.math.exp(-tf.math.pow((x - x_prime), 2) / 2* s**2))
+    
+    k_sum = tf.math.reduce_sum(k)
+    
+    return k_sum.numpy()
