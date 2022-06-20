@@ -86,8 +86,7 @@ class SelfAttention(Layer):
         r = self.W_s2 @ r
 
         # a
-        a = tf.math.exp(r)
-        a = tf.nn.softmax(a)
+        a = tf.nn.softmax(r)
         a = tf.math.negative(tf.math.log(a))
 
         # E = A x S
