@@ -37,3 +37,30 @@ def mmd(X, Y):
 
     mmd = tf.math.reduce_sum(first_term) - tf.math.reduce_sum(second_term) + tf.math.reduce_sum(third_term)
     return mmd.numpy()
+
+
+def mmd_nca_loss(input):
+    """
+    **Needs adaptation to actual dataset/training function**
+    
+    MMD-NCA loss based on Coskun et al. (2018)
+
+    Args:
+        input: model output for 7 classes of motion sequences
+    Returns:
+        mmd_nca: MMD-NCA loss
+    """
+    x_anchor, x_pos, x_neg1, x_neg2, x_neg3, x_neg4, x_neg5 = input
+
+    nominator = tf.math.exp(- mmd(x_anchor, x_pos))
+
+    denom_1 = tf.math.exp(- mmd(x_anchor, x_neg1))
+    denom_2 = tf.math.exp(- mmd(x_anchor, x_neg2))
+    denom_3 = tf.math.exp(- mmd(x_anchor, x_neg3))
+    denom_4 = tf.math.exp(- mmd(x_anchor, x_neg4))
+    denom_5 = tf.math.exp(- mmd(x_anchor, x_neg5))
+
+    denominator = denom_1 + denom_2 + denom_3 + denom_4 + denom_5
+    mmd_nca = nominator / denominator
+    
+    return mmd_nca
