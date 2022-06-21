@@ -48,54 +48,49 @@ def create_batch(df, num_classes=5, samples=25):
     
     # create array of 25 random samples, repeat for all selected classes
     # anchor class
-    arr = np.arange(df[pos_class].shape[0]) #create indices for samples of this class
-    np.random.shuffle(arr) #shuffle
-    for i in range(samples):
-        if i == 0:
-            _batch = df[pos_class][arr[i]] #assign first sample
-        else:
-            _batch = np.concatenate((_batch, df[pos_class][arr[i]]), axis = 0) #concatenate further samples
+    arr = np.arange(df[pos_class].shape[0]) # get indices for samples of this class
+    np.random.shuffle(arr) # shuffle
+    anchor = [df[pos_class][arr[i]] for i in range(samples)] # select 25 samples
+    batch.append(anchor)
     
     # positive class
     arr = np.arange(df[pos_class].shape[0])
     np.random.shuffle(arr)
-    for i in range(25):
-        _batch = np.concatenate((_batch, df[pos_class][arr[i]]), axis = 0)
+    pos = [df[pos_class][arr[i]] for i in range(samples)]
+    batch.append(pos)
 
     # negative class 1    
     arr = np.arange(df[neg_class_1].shape[0])
     np.random.shuffle(arr)
-    for i in range(25):
-        _batch = np.concatenate((_batch, df[neg_class_1][arr[i]]), axis = 0)
+    neg_1 = [df[neg_class_1][arr[i]] for i in range(samples)]
+    batch.append(neg_1)
 
     # negative class 2
     arr = np.arange(df[neg_class_2].shape[0])
     np.random.shuffle(arr)
-    for i in range(25):
-        _batch = np.concatenate((_batch, df[neg_class_2][arr[i]]), axis = 0)
+    neg_2 = [df[neg_class_2][arr[i]] for i in range(samples)]
+    batch.append(neg_2)
 
     # negative class 3
     arr = np.arange(df[neg_class_3].shape[0])
     np.random.shuffle(arr)
-    for i in range(25):
-        _batch = np.concatenate((_batch, df[neg_class_3][arr[i]]), axis = 0)
+    neg_3 = [df[neg_class_3][arr[i]] for i in range(samples)]
+    batch.append(neg_3)
     
     # negative class 4
     arr = np.arange(df[neg_class_4].shape[0])
     np.random.shuffle(arr)
-    for i in range(25):
-        _batch = np.concatenate((_batch, df[neg_class_4][arr[i]]), axis = 0)
+    neg_4 = [df[neg_class_4][arr[i]] for i in range(samples)]
+    batch.append(neg_4)
     
     # negative class 5
     arr = np.arange(df[neg_class_5].shape[0])
     np.random.shuffle(arr)
-    for i in range(25):
-        _batch = np.concatenate((_batch, df[neg_class_5][arr[i]]), axis = 0)
+    neg_5 = [df[neg_class_5][arr[i]] for i in range(samples)]
+    batch.append(neg_5)
     
-    # make tf dataset?
-    # rn, this is just a concatenation of samples - how am I gonna work with this?
-    batch.append(_batch)
-        
+    # batch now has shape [nr_classes, nr_samples, feat_vector]
+    # feat_vector itself should have shape [time_steps, nr_joints, coordinates]
     return batch
 
 
