@@ -5,8 +5,11 @@ import numpy as np
 def create_batch(df, num_classes=5, samples=25):
     """
     Utility function to create batches for MMD-NCA triplet loss model based on Coskun et al. (2018).
+    Collects all available classes, then randomly selects a positive and num_classes negative ones. Finally draws 25 samples
+    randomly from the classes and concatenates everything to a batch.
+
     Code heavily borrows from https://github.com/xrenaa/Human-Motion-Analysis-with-Deep-Metric-Learning/blob/master/train.py
-    Default params based on Coskun et al.
+    Default params based on Coskun et al.: https://arxiv.org/abs/1807.11176v2
 
     Args:
         df: dataframe from which to create dataset (json)
@@ -17,20 +20,17 @@ def create_batch(df, num_classes=5, samples=25):
     """
 
     batch = []
-    classes = []
 
     # iterate through dataset and collect classes
-    for key in df:
-        classes.append(key)
+    classes = [key for key in df]
     
-    for _ in range(num_classes+1):
-        # assign positive and negative classes from entirety of classes
-        pos_class = np.random.choice(classes)
-        neg_class_1 = np.random.choice(classes)
-        neg_class_2 = np.random.choice(classes)
-        neg_class_3 = np.random.choice(classes)
-        neg_class_4 = np.random.choice(classes)
-        neg_class_5 = np.random.choice(classes)
+    # assign classes
+    pos_class = np.random.choice(classes)
+    neg_class_1 = np.random.choice(classes)
+    neg_class_2 = np.random.choice(classes)
+    neg_class_3 = np.random.choice(classes)
+    neg_class_4 = np.random.choice(classes)
+    neg_class_5 = np.random.choice(classes)
 
     # reassign if class has less than specified nr of samples or same class is chosen multiple times
     while len(df[pos_class]) < 2:
@@ -48,13 +48,13 @@ def create_batch(df, num_classes=5, samples=25):
     
     # create array of 25 random samples, repeat for all selected classes
     # anchor class
-    arr = np.arange(df[pos_class].shape[0])
-    np.random.shuffle(arr)
+    arr = np.arange(df[pos_class].shape[0]) #create indices for samples of this class
+    np.random.shuffle(arr) #shuffle
     for i in range(samples):
         if i == 0:
-            _batch = df[pos_class][arr[i]]
+            _batch = df[pos_class][arr[i]] #assign first sample
         else:
-            _batch = np.concatenate((_batch, df[pos_class][arr[i]]), axis = 0)
+            _batch = np.concatenate((_batch, df[pos_class][arr[i]]), axis = 0) #concatenate further samples
     
     # positive class
     arr = np.arange(df[pos_class].shape[0])
@@ -93,6 +93,7 @@ def create_batch(df, num_classes=5, samples=25):
         _batch = np.concatenate((_batch, df[neg_class_5][arr[i]]), axis = 0)
     
     # make tf dataset?
+    # rn, this is just a concatenation of samples - how am I gonna work with this?
     batch.append(_batch)
         
     return batch
