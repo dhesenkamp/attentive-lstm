@@ -73,7 +73,7 @@ class SelfAttention(Layer):
             6. Normalize (e.g. softmax)
             7. Negative log
         Final embedding E:
-            8. Multiply scores with sequence A x S
+            8. Multiply scores A with sequence S
         
         Args:
             input: embedding from the LSTM
@@ -85,7 +85,8 @@ class SelfAttention(Layer):
         r = tf.nn.tanh(self.W_s1 @ tf.transpose(input, perm=[0, 2, 1]))
         r = self.W_s2 @ r
 
-        # a
+        # a_i = -log(exp r_i / sum exp r)
+        #a = tf.math.exp(r)
         a = tf.nn.softmax(r)
         a = tf.math.negative(tf.math.log(a))
 
