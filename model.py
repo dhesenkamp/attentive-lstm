@@ -1,8 +1,6 @@
 import tensorflow as tf
-import tensorflow_addons as tfa
 from tensorflow.keras import Model
 from tf.keras.layers import Dense, LSTM, Bidirectional, BatchNormalization, Dropout, Lambda
-from tensorflow_addons.rnn import LayerNormLSTMCell
 from attention import SimpleAttention, SelfAttention
 
 
@@ -13,38 +11,36 @@ class AttentiveLSTM(Model):
     Currently with triplet semihard loss as MMD-NCA is not implemented yet.
     """
 
-    def __init__(self, hidden_units=128):
+    def __init__(self, hidden_units=128, r=5):
         """
         Constructor
         
         Args:
             hidden_units (int): number of hidden units for the LSTM, i.e. size of embedding
+            r (int): number of frames in the motion sequence which the model should "pay attention" to
         """
         super(AttentiveLSTM, self).__init__()
 
         self.optimizer = tf.keras.optimizers.SGD(learning_rate=0.0001, momentum=0.9) #decay missing
-        self.loss_function = tfa.losses.TripletSemiHardLoss(margin=1.0)
         self.dropout_rate = 0.5
 
         self.bi_lstm = Bidirectional(LSTM(units=hidden_units, return_sequences=True))
         # output of shape seq_len x hidden_units*2
-        # possibly use this instead
-        #LayerNormLSTMCell(units=hidden_units)
 
         self.batchnorm1 = BatchNormalization()
         self.dropout1 = Dropout(rate=self.dropout_rate)
 
         # attention layer
-        self.simpleAttention = SimpleAttention()
-        self.selfAttention = SelfAttention(r=5, lstm_units=hidden_units)
+        #self.simpleAttention = SimpleAttention()
+        self.selfAttention = SelfAttention(r=r, lstm_units=hidden_units)
 
         self.batchnorm2 = BatchNormalization()
         self.dropout2 = Dropout(rate=self.dropout_rate)
-        self.dense1 = Dense(units=320, activation='relu')
+        self.dense1 = Dense(units=320, activation='leaky_relu')
 
         self.batchnorm3 = BatchNormalization()
         self.dropout3 = Dropout(rate=self.dropout_rate)
-        self.dense2 = Dense(units=320, activation='relu')
+        self.dense2 = Dense(units=320, activation='leaky_relu')
 
         self.batchnorm4 = BatchNormalization()
         self.dense3 = Dense(units=128) #activation?
@@ -59,7 +55,7 @@ class AttentiveLSTM(Model):
         
         Args:
             input (tensor): input to the model. Expects 3D tensor of form (batch, timesteps, feature)
-            training (Bool): whether to use training or inference mode. Default: False (inference), set to True for training
+            training (Bool): whether to use training or inference mode. Default: True (inference), set to False for training
         Returns:
             x: output of the model
         """
