@@ -92,4 +92,4 @@ def create_batch(df, num_classes=5, samples=25):
     
     # batch now has shape [nr_classes, nr_samples, feat_vector]
     # feat_vector itself should have shape [time_steps, nr_joints * coordinates]
-    return batch
+    return tf.convert_to_tensor(value=batch, dtype=tf.float32)
