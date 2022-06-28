@@ -17,7 +17,7 @@ def kernel_function(x, x_prime, sigma=[1,2,4,8,16]):
     
     k_sum = tf.math.reduce_sum(k)
     
-    return k_sum.numpy()
+    return k_sum
 
 
 def mmd(X, Y):
@@ -36,7 +36,7 @@ def mmd(X, Y):
     third_term = tf.math.divide(1, len(Y)**2) * [kernel_function(i, j) for i in Y for j in Y]
 
     mmd = tf.math.reduce_sum(first_term) - tf.math.reduce_sum(second_term) + tf.math.reduce_sum(third_term)
-    return mmd.numpy()
+    return mmd
 
 
 def mmd_nca_loss(input):
