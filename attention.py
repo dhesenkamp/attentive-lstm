@@ -43,12 +43,13 @@ class SelfAttention(Layer):
     https://arxiv.org/abs/1703.03130
     """
 
-    def __init__(self, r, lstm_units):
+    def __init__(self, r=10, d=10, lstm_units=128):
         """
         Constructor. Initialize weight matrices for attention.
         
         Args:
             r (int): number of time steps to pay attention to
+            d (int): hyperparameter, determines weight matrix size
             lstm_units (int): number of hidden units of the preceeding LSTM. Required to get weight matrix in the correct shape
         """
         
@@ -56,7 +57,7 @@ class SelfAttention(Layer):
 
         # 2 weight matrices á 200x10 and 10x1 (numbers from Coskun et al.)
         # init weight matrices with uniform dist with zero mean and 0.001 sd
-        self.d_a = 10 # treat as hyperparam for weight matrix size
+        self.d_a = d
         self.W_s1 = self.add_weight(shape=[self.d_a, lstm_units*2], trainable=True)
         self.W_s2 = self.add_weight(shape=[r, self.d_a], trainable=True)
 
