@@ -38,25 +38,30 @@ def mmd(X, Y):
 
 def mmd_nca_loss(input):
     """
-    **Needs adaptation to actual dataset/training function**
+    // Needs adaptation to actual dataset/training function //
     
-    MMD-NCA loss based on Coskun et al. (2018)
+    MMD-NCA loss based on Coskun et al. (2018).
+    nominator is the MMD between anchor and positive sample, denominator is the sum over MMDs between anchor and all negative samples.
 
     Args:
-        input: model output for 7 classes of motion sequences
+        input (list): list of sequences/embeddings to calculate MMD-NCA from. Has to be of the following order:
+            input[0] = anchor embedding
+            input[1] = positive embedding
+            input[2:] = variable number of negative embeddings
     Returns:
         mmd_nca: MMD-NCA loss
     """
-    x_anchor, x_pos, x_neg1, x_neg2, x_neg3, x_neg4, x_neg5 = input
+    if type(input) != list:
+        raise TypeError('Var `input` has to be of type list.')
+    if len(input) < 3:
+        raise ValueError('Var `input` has to contain at least 3 embeddings.')
 
-    nominator = tf.math.exp(- mmd(x_anchor, x_pos))
-    denom_1 = tf.math.exp(- mmd(x_anchor, x_neg1))
-    denom_2 = tf.math.exp(- mmd(x_anchor, x_neg2))
-    denom_3 = tf.math.exp(- mmd(x_anchor, x_neg3))
-    denom_4 = tf.math.exp(- mmd(x_anchor, x_neg4))
-    denom_5 = tf.math.exp(- mmd(x_anchor, x_neg5))
+    anchor = input[0]
+    mmd_list = [tf.math.exp(- mmd(anchor, i)) for i in input[1:]]
     
-    denominator = denom_1 + denom_2 + denom_3 + denom_4 + denom_5
+    nominator = mmd_list[0]
+    denominator = sum(mmd_list[1:])
+
     mmd_nca = nominator / denominator
     
     return mmd_nca
