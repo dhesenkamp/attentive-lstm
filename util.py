@@ -1,5 +1,8 @@
 import tensorflow as tf
 import numpy as np
+import os
+import re
+import cdflib
 
 
 def create_batch(df, num_classes=5, samples=25):
@@ -93,3 +96,117 @@ def create_batch(df, num_classes=5, samples=25):
     # batch now has shape [nr_classes, nr_samples, feat_vector]
     # feat_vector itself should have shape [time_steps, nr_joints * coordinates]
     return tf.convert_to_tensor(value=batch, dtype=tf.float32)
+
+
+def get_paths(path, file_format):
+    """Collect all paths to given file format.
+    
+    Args:
+        path (str):
+        file_format (str):
+    Returns:
+        paths
+    """
+    paths = []
+    for root, dirs, files in os.walk(path):
+        for f in files:
+            #print(os.path.relpath(os.path.join(root, f), "."))
+            if file_format in f:
+                paths.append(os.path.relpath(os.path.join(root, f), "."))
+    return paths
+
+
+def collect_data(path='.', file_format='.cdf'):
+    
+    coordinates = []
+    labels = []
+    paths = get_paths(path=path, file_format=file_format)
+
+    for p in paths:
+        # get 2D data
+        cdf_file = cdflib.CDF(p)
+        coord = cdf_file.varget('Pose').squeeze()
+        coordinates.append(coord)
+
+        # get motion name
+        filename = os.path.basename(p)
+        motion = re.split('[ .\d+]', filename)[0]
+        labels.append(motion)
+    
+    return coordinates, labels
+
+
+def downsample(data, factor):
+    """Downsample sequences by specified factor.
+
+    Example: sequence with 150 frames/steps. Downsampling by factor 3 means only keeping every 3rd frame, 
+    resulting in a sequence with 50 frames.
+
+    Args:
+        data (array): 
+        factor (int): factor by which to downsample the sequences
+    Returns:
+        data (array): downsampled sequences
+    """
+    for i in range(len(data)):
+        data[i] = data[i][::factor]
+    
+    return data
+
+
+def cut_sequences(data, length):
+    """Cut given sequences down to specified length.
+    
+    Args:
+        data
+        length (int): 
+    Returns:
+        data
+    Raises:
+        ValueError
+    """
+    min_length = min([len(elem) for elem in data])
+    if length > min_length:
+        raise ValueError('Var `length` has to be <= length of the shortest element in `data`.')
+
+    data = [elem[:length] for elem in data]
+
+    return data
+
+
+def prepare_data(data, labels, batch_size=64, normalize=True, one_hotify=True, add_noise=False, **kwargs):
+    """Prepare motion data.
+
+    Preprocesses motion sequences and optionally augments data, increasing dataset size two-fold.
+
+    Args:
+        data:
+        labels:
+        batch_size (int): Size of mini-batches. For mini-batching to have a positive impact on training behaviour,
+            batch_size should be at least 16, but preferably in the range of 64-128. Default: 64
+        normalize (Bool):
+        one_hotify (Bool):
+        add_noise (Bool):
+
+    Keyword Args:
+        noise_factor (float): standard deviation to use for noise, which is sampled from a normal distribution with mean 0. Default: 2.0
+    
+    Returns:
+        ds (tf.data.Dataset): TensorFlow dataset instance
+    """
+    norm = tf.keras.layers.Normalization()
+    norm.adapt(np.asarray(data))
+
+    ds = tf.data.Dataset.from_tensor_slices((data, int_labels))
+
+    if one_hotify:
+        ds = ds.map(lambda x,y: (x, tf.one_hot(y, depth=NR_CLASSES)))
+    if add_noise:
+        ds_noise = ds.map(lambda x,y: (x+tf.random.normal(shape=x.shape, mean=0, stddev=kwargs['noise_factor']),y))
+        ds.concatenate(ds_noise)
+    if normalize:
+        ds = ds.map(lambda x,y: (tf.squeeze(norm(x)), y))
+
+    ds = ds.shuffle(512).batch(batch_size)#, drop_remainder=True).prefetch(tf.data.experimental.AUTOTUNE)
+
+    return ds
