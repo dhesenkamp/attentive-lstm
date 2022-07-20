@@ -17,7 +17,7 @@ Layer normalization is based on Ba et al. (2016): [_Layer Normalization_](https:
 
 ## TO DO
 - [ ] Penalization term using Frobenius norm
-- [ ] MMD-NCA loss
+- [x] MMD-NCA loss
 - [x] L2 norm
 - [ ] Training function
 
@@ -25,7 +25,7 @@ Layer normalization is based on Ba et al. (2016): [_Layer Normalization_](https:
 https://towardsdatascience.com/create-your-own-custom-attention-layer-understand-all-flavours-2201b5e8be9e  
 https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/  
 https://omoindrot.github.io/triplet-loss  
-
+https://aiden.nibali.org/blog/2016-09-06-neural-network-implementation-tricks/
 
 ## References
 Ba, J. L., Kiros, J. R., & Hinton, G. E. (2016). _Layer Normalization_. https://doi.org/10.48550/arxiv.1607.06450
